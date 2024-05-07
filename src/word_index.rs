@@ -1,4 +1,3 @@
-#![stable]
 //! This module is used to index words and does the heavy lifting of our program.
 
 /// A counted word.
@@ -20,7 +19,6 @@
 /// assert_eq!(indexed_word.appeared, 12i64);
 /// ```
 #[derive(Debug, PartialEq)]
-#[stable]
 pub struct IndexedWord {
     /// The word that's indexed.
     pub word: String,
@@ -65,7 +63,6 @@ pub struct IndexedWord {
 ///     appeared: 1
 /// });
 /// ```
-#[stable]
 pub fn add_word(word: String, index: &mut Vec<IndexedWord>) {
 
     for indexed_word in index.iter_mut() {

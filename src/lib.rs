@@ -1,5 +1,3 @@
-#![unstable]
-#![feature(collections)]
 //! This is a library to count the words in a text.
 //!
 //! Words will be sorted by the amount of times they appear in a piece of text.
@@ -36,7 +34,6 @@ pub mod word_index;
 /// assert_eq!(word_index[2].appeared, 1);
 /// assert_eq!(word_index[3].appeared, 1);
 /// ```
-#[unstable]
 pub fn count_words (input: &str, mut word_index: &mut Vec<word_index::IndexedWord>) {
 
     let mut current_word = String::new();

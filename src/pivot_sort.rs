@@ -1,4 +1,3 @@
-#![stable]
 //! This module contains the implementation of a pivot-based sorting algorithm.
 //!
 //! This is used to sort the output of the indexing algorithm, making the final output of the
@@ -31,10 +30,8 @@ use std::cmp;
 ///
 /// assert_eq!(something.weight(), 2i64);
 /// ```
-#[stable]
 pub trait Sortable {
     /// The value to sort by.
-    #[stable]
     fn weight(&self) -> i64;
 }
 
@@ -88,7 +85,6 @@ pub trait Sortable {
 ///     Something{weight: 1, id: 1},
 /// ]);
 /// ```
-#[stable]
 pub fn pivot_sort_high_to_low<'a, T: Sortable>(items: &mut Vec<T>) {
     if items.len() == 0 {
         return;

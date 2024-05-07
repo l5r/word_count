@@ -17,33 +17,28 @@
 //! 'i':		  1
 //! ```
 
-#![feature(old_io, collections)]
-
 extern crate lib_word_count;
 use lib_word_count as word_count;
 
-use std::old_io as io;
-use std::old_io::Reader;
+use std::io;
+use std::io::Read;
 
 /// This is the entry point for the program.
 ///
-#[stable]
-fn main() {
+fn main() -> Result<(), std::io::Error> {
 
     let mut word_index = Vec::new();
 
-    let input = match io::stdio::stdin().read_to_string() {
-        Ok(result) => result,
-        Err(error) => panic!("Could not read from stdin: {:?}", error)
-    };
+    let mut dest = String::new();
+    let _ = io::stdin().read_to_string(&mut dest)?;
 
-    word_count::count_words(&input, &mut word_index);
+    word_count::count_words(&dest, &mut word_index);
 
-    for indexed_word in word_index {
+    Ok(for indexed_word in word_index {
         if indexed_word.word.len() >= 5 {
             println!("'{}':\t{}", indexed_word.word, indexed_word.appeared);
         } else {
             println!("'{}':\t\t{}", indexed_word.word, indexed_word.appeared)
         }
-    }
+    })
 }
