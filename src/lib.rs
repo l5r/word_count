@@ -4,6 +4,7 @@
 
 pub mod pivot_sort;
 pub mod word_index;
+use  word_index::{WordStore, CountedWord};
 
 /// Count the appearances of each word in a string.
 ///
@@ -34,8 +35,9 @@ pub mod word_index;
 /// assert_eq!(word_index[2].appeared, 1);
 /// assert_eq!(word_index[3].appeared, 1);
 /// ```
-pub fn count_words (input: &str, mut word_index: &mut Vec<word_index::IndexedWord>) {
+pub fn count_words(input: &str) -> Vec<CountedWord> {
 
+    let mut word_store = WordStore::new();
     let mut current_word = String::new();
 
     for character in input.chars() {
@@ -50,18 +52,13 @@ pub fn count_words (input: &str, mut word_index: &mut Vec<word_index::IndexedWor
 
         // new word
         } else {
-            word_index::add_word(current_word, &mut word_index);
-            current_word = String::new();
+            current_word.make_ascii_lowercase();
+            word_store.add_word(&current_word);
+            current_word.clear();
         }
     }
 
     // sort the output
-    pivot_sort::pivot_sort_high_to_low(&mut word_index);
+    word_store.sort_words()
 }
 
-/// Words are sorted by the amount of times they appeared.
-impl pivot_sort::Sortable for word_index::IndexedWord {
-    fn weight(&self) -> i64 {
-        self.appeared
-    }
-}

@@ -27,18 +27,18 @@ use std::io::Read;
 ///
 fn main() -> Result<(), std::io::Error> {
 
-    let mut word_index = Vec::new();
-
     let mut dest = String::new();
     let _ = io::stdin().read_to_string(&mut dest)?;
 
-    word_count::count_words(&dest, &mut word_index);
+    let words = word_count::count_words(&dest);
 
-    Ok(for indexed_word in word_index {
+    for indexed_word in words {
         if indexed_word.word.len() >= 5 {
-            println!("'{}':\t{}", indexed_word.word, indexed_word.appeared);
+            println!("'{}':\t{}", indexed_word.word, indexed_word.count);
         } else {
-            println!("'{}':\t\t{}", indexed_word.word, indexed_word.appeared)
+            println!("'{}':\t\t{}", indexed_word.word, indexed_word.count)
         }
-    })
+    }
+
+    Ok(())
 }

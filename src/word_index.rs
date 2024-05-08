@@ -1,5 +1,7 @@
 //! This module is used to index words and does the heavy lifting of our program.
 
+use std::collections::HashMap;
+
 /// A counted word.
 ///
 /// This struct contains members for storing a word and the number of times it appeared. This
@@ -19,13 +21,20 @@
 /// assert_eq!(indexed_word.appeared, 12i64);
 /// ```
 #[derive(Debug, PartialEq)]
-pub struct IndexedWord {
+pub struct CountedWord {
     /// The word that's indexed.
-    pub word: String,
+    pub word: Box<str>,
     /// The amount of times this word appeared.
-    pub appeared: i64
+    pub count: usize
 }
 
+#[derive(Debug, Default, PartialEq)]
+pub struct WordStore(HashMap<Box<str>, usize>);
+
+impl WordStore {
+    pub fn new() -> WordStore {
+        WordStore::default()
+    }
 /// Add a word to a given index.
 ///
 /// This function prevents duplicates and increments the count of the word appearances
@@ -63,19 +72,22 @@ pub struct IndexedWord {
 ///     appeared: 1
 /// });
 /// ```
-pub fn add_word(word: String, index: &mut Vec<IndexedWord>) {
+pub fn add_word(&mut self, word: &str) {
 
-    for indexed_word in index.iter_mut() {
-        if word.to_lowercase() == indexed_word.word {
-            indexed_word.appeared += 1;
-            return;
+    let hash_map = &mut self.0;
+
+    if let Some(count) = hash_map.get_mut(word) {
+            *count += 1;
+    } else {
+            hash_map.insert(word.to_owned().into_boxed_str(), 1);
         }
     }
 
-    let new_word = IndexedWord{
-        word: word.to_lowercase(),
-        appeared: 1
-    };
-
-    index.push(new_word);
+pub fn sort_words(self) -> Vec<CountedWord> {
+        let mut collected = self.0.into_iter()
+            .map(|(word, count)| CountedWord { word, count })
+            .collect::<Vec<CountedWord>>();
+        collected.sort_unstable_by(|a, b| b.count.cmp(&a.count));
+        collected
+    }
 }
