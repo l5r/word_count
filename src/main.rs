@@ -21,22 +21,24 @@ extern crate lib_word_count;
 use lib_word_count as word_count;
 
 use std::io;
+use std::io::BufReader;
 use std::io::Read;
+use std::error::Error;
 
 /// This is the entry point for the program.
 ///
-fn main() -> Result<(), std::io::Error> {
+fn main() -> Result<(), Box<dyn Error>> {
 
-    let mut dest = String::new();
-    let _ = io::stdin().read_to_string(&mut dest)?;
+    let input = io::stdin().lock();
+    let reader = BufReader::new(input);
 
-    let words = word_count::count_words(&dest);
+    let words = word_count::count_words(reader.bytes().map(|b| b.unwrap()));
 
     for indexed_word in words {
         if indexed_word.word.len() >= 5 {
-            println!("'{}':\t{}", indexed_word.word, indexed_word.count);
+            println!("'{}':\t{}", std::str::from_utf8(&indexed_word.word)?, indexed_word.count);
         } else {
-            println!("'{}':\t\t{}", indexed_word.word, indexed_word.count)
+            println!("'{}':\t\t{}", std::str::from_utf8(&indexed_word.word)?, indexed_word.count)
         }
     }
 

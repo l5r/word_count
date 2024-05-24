@@ -2,7 +2,6 @@
 //!
 //! Words will be sorted by the amount of times they appear in a piece of text.
 
-pub mod pivot_sort;
 pub mod word_index;
 use  word_index::{WordStore, CountedWord};
 
@@ -18,32 +17,33 @@ use  word_index::{WordStore, CountedWord};
 /// # Examples
 ///
 /// ```
-/// let mut word_index = Vec::new();
 /// let input = "I like cookies. Mmm... Cookies.";
 ///
-/// lib_word_count::count_words(input, &mut word_index);
+/// let word_index = lib_word_count::count_words(input.bytes());
 ///
 /// assert_eq!(word_index.len(), 4);
 ///
-/// assert_eq!(word_index[0].word, "cookies".to_string());
-/// assert_eq!(word_index[1].word, "i".to_string());
-/// assert_eq!(word_index[2].word, "like".to_string());
-/// assert_eq!(word_index[3].word, "mmm".to_string());
+/// let words = ["i".as_bytes(), "like".as_bytes(), "mmm".as_bytes()];
 ///
-/// assert_eq!(word_index[0].appeared, 2);
-/// assert_eq!(word_index[1].appeared, 1);
-/// assert_eq!(word_index[2].appeared, 1);
-/// assert_eq!(word_index[3].appeared, 1);
+/// assert_eq!(word_index[0].word.as_ref(), Into::<&[u8]>::into("cookies".as_bytes()));
+/// assert!(words.contains(&word_index[1].word.as_ref()));
+/// assert!(words.contains(&word_index[2].word.as_ref()));
+/// assert!(words.contains(&word_index[3].word.as_ref()));
+///
+/// assert_eq!(word_index[0].count, 2);
+/// assert_eq!(word_index[1].count, 1);
+/// assert_eq!(word_index[2].count, 1);
+/// assert_eq!(word_index[3].count, 1);
 /// ```
-pub fn count_words(input: &str) -> Vec<CountedWord> {
+pub fn count_words(input: impl IntoIterator<Item=u8>) -> Vec<CountedWord> {
 
     let mut word_store = WordStore::new();
-    let mut current_word = String::new();
+    let mut current_word = Vec::<u8>::new();
 
-    for character in input.chars() {
+    for character in input {
 
         // char is part of a word
-        if character.is_alphanumeric() {
+        if character.is_ascii_alphanumeric() {
             current_word.push(character);
 
         // multiple non-word characters

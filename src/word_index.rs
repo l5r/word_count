@@ -12,24 +12,24 @@ use std::collections::HashMap;
 /// ```
 /// use lib_word_count::word_index;
 ///
-/// let indexed_word = word_index::IndexedWord{
-///     word: "Text".to_string(),
-///     appeared: 12
+/// let indexed_word = word_index::CountedWord{
+///     word: "Text".as_bytes().into(),
+///     count: 12
 /// };
 ///
-/// assert_eq!(indexed_word.word, "Text".to_string());
-/// assert_eq!(indexed_word.appeared, 12i64);
+/// assert_eq!(indexed_word.word.as_ref(), "Text".as_bytes());
+/// assert_eq!(indexed_word.count, 12);
 /// ```
 #[derive(Debug, PartialEq)]
 pub struct CountedWord {
     /// The word that's indexed.
-    pub word: Box<str>,
+    pub word: Box<[u8]>,
     /// The amount of times this word appeared.
     pub count: usize
 }
 
 #[derive(Debug, Default, PartialEq)]
-pub struct WordStore(HashMap<Box<str>, usize>);
+pub struct WordStore(HashMap<Box<[u8]>, usize>);
 
 impl WordStore {
     pub fn new() -> WordStore {
@@ -49,37 +49,24 @@ impl WordStore {
 /// # Examples
 ///
 /// ```
-/// use lib_word_count::word_index;
+/// use lib_word_count::word_index::WordStore;
 ///
-/// let mut index = Vec::new();
+/// let mut word_store = WordStore::new();
 ///
-/// word_index::add_word("Hello".to_string(), &mut index);
-/// word_index::add_word("hELLO".to_string(), &mut index);
-/// word_index::add_word("World".to_string(), &mut index);
-/// word_index::add_word("HELLO".to_string(), &mut index);
-/// word_index::add_word("PFUDOR".to_string(), &mut index);
-///
-/// assert_eq!(index[0], word_index::IndexedWord{
-///     word: "hello".to_string(),
-///     appeared: 3
-/// });
-/// assert_eq!(index[1], word_index::IndexedWord{
-///     word: "world".to_string(),
-///     appeared: 1
-/// });
-/// assert_eq!(index[2], word_index::IndexedWord{
-///     word: "pfudor".to_string(),
-///     appeared: 1
-/// });
+/// word_store.add_word("Hello".as_bytes());
+/// word_store.add_word("hELLO".as_bytes());
+/// word_store.add_word("World".as_bytes());
+/// word_store.add_word("HELLO".as_bytes());
+/// word_store.add_word("PFUDOR".as_bytes());
 /// ```
-pub fn add_word(&mut self, word: &str) {
+pub fn add_word(&mut self, word: &[u8]) {
 
     let hash_map = &mut self.0;
 
     if let Some(count) = hash_map.get_mut(word) {
             *count += 1;
     } else {
-            hash_map.insert(word.to_owned().into_boxed_str(), 1);
+            hash_map.insert(word.to_owned().into(), 1);
         }
     }
 
