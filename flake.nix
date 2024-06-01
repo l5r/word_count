@@ -15,7 +15,7 @@
 
           src = ./.;
           
-        cargoHash = "sha256-t44WBi60YaChpX5kBlJfnHzzFoLhchhOwOdXMLq9kYA=";
+          cargoHash = "sha256-6MHfBpZ+I6OHMjFLtGVYokfH0tpguX1blppmrPpbWqg=";
         };
       };
     };
