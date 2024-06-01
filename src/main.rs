@@ -24,8 +24,8 @@ use std::env;
 use std::error::Error;
 use std::fs::File;
 use std::io;
-use std::io::BufReader;
-use std::io::Read;
+use std::io::{BufReader, BufWriter};
+use std::io::{Read, Write};
 
 /// This is the entry point for the program.
 ///
@@ -53,21 +53,15 @@ fn main() -> Result<(), Box<dyn Error>> {
         }
     };
 
-    for indexed_word in words {
-        if indexed_word.word.len() >= 5 {
-            println!(
-                "'{}':\t{}",
-                std::str::from_utf8(&indexed_word.word)?,
-                indexed_word.count
-            );
-        } else {
-            println!(
-                "'{}':\t\t{}",
-                std::str::from_utf8(&indexed_word.word)?,
-                indexed_word.count
-            )
-        }
+    let stdout = io::stdout().lock();
+    let mut writer = BufWriter::new(stdout);
+    for w in words {
+        write!(writer, "{}\t", w.count)?;
+        writer.write_all(&w.word)?;
+        writer.write_all(&[b'\n'])?;
     }
+
+    writer.flush()?;
 
     Ok(())
 }
