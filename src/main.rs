@@ -81,7 +81,7 @@ fn main() -> Result<(), Box<dyn Error>> {
             writer.flush()?;
         }
         Some(filename) => {
-            let output = File::open(filename)?;
+            let output = File::create(filename)?;
             let mut writer = BufWriter::new(output);
             for w in words {
                 write!(writer, "{}\t", w.count)?;
