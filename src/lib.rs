@@ -5,6 +5,8 @@
 pub mod word_index;
 use  word_index::{WordStore, CountedWord};
 
+use std::time::{Duration, Instant, SystemTime};
+
 /// Count the appearances of each word in a string.
 ///
 /// # Arguments
@@ -40,6 +42,9 @@ pub fn count_words(input: impl IntoIterator<Item=u8>) -> Vec<CountedWord> {
     let mut word_store = WordStore::new();
     let mut current_word = Vec::<u8>::new();
 
+    let read_words_start_time_mono = Instant::now();
+    let read_words_start_time_wall = SystemTime::now();
+
     for character in input {
 
         // char is part of a word
@@ -58,7 +63,18 @@ pub fn count_words(input: impl IntoIterator<Item=u8>) -> Vec<CountedWord> {
         }
     }
 
+    eprintln!("read time (mono): {}ms", read_words_start_time_mono.elapsed().as_millis());
+    eprintln!("read time (wall): {}ms", read_words_start_time_wall.elapsed().unwrap().as_millis());
+
+    let sort_words_start_time_mono = Instant::now();
+    let sort_words_start_time_wall = SystemTime::now();
+
     // sort the output
-    word_store.sort_words()
+    let sorted_words = word_store.sort_words();
+
+    eprintln!("sort time (mono): {}ms", sort_words_start_time_mono.elapsed().as_millis());
+    eprintln!("sort time (wall): {}ms", sort_words_start_time_wall.elapsed().unwrap().as_millis());
+
+    sorted_words
 }
 
